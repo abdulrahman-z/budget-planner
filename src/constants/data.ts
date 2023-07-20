@@ -2,6 +2,16 @@ import Category from "../redux/constants";
 
 export const API_URL = `https://64b8449f21b9aa6eb079bb16.mockapi.io`;
 
+export interface Expense {
+    id?: string;
+    category: string;
+    amountSpent: number;
+    date: string;
+    createdAt?: string;
+    name?: string;
+    avatar?:string;
+}
+
 export const ExpenseData = [
     {
         id: 1,

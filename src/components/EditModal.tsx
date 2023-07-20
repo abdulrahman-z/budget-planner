@@ -3,10 +3,18 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
-import { useDispatch } from "react-redux";
-//import { addItem, remove, update } from "../redux/features/expenses";
+//import { useDispatch } from "react-redux";
+//import { resetNewExpenseItem } from "../redux/features/expenses";
 import { useNavigate } from "react-router-dom";
 import AddIcon from "@mui/icons-material/Add";
+import {
+  addExpenseData,
+  fetchExpenseData,
+  fetchExpensesList,
+  updateExpense,
+} from "../redux/features/expenses";
+import { useAppDispatch } from "../hooks/expense-dispatch";
+import { Expense } from "../constants/data";
 
 const style = {
   position: "absolute" as "absolute",
@@ -23,10 +31,13 @@ const style = {
 interface Props {
   mode: "Edit" | "Delete" | "Add";
   rowData?: {
-    id: number;
+    id: string;
     category: string;
     amountSpent: number;
     date: string;
+    createdAt: string;
+    name: string;
+    avatar: string;
   };
   expenseList?: {
     id: number;
@@ -45,7 +56,8 @@ export default function EditModal(props: Props) {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  //const dispatch = useDispatch();
+  const appDispatch = useAppDispatch();
 
   return (
     <div>
@@ -118,15 +130,16 @@ export default function EditModal(props: Props) {
                     <Button
                       variant="outlined"
                       onClick={() => {
-                        // let newData = {
-                        //   id: props.expenseList.length + 1,
-                        //   category: category,
-                        //   amountSpent: amount,
-                        //   date: new Date().toLocaleDateString(),
-                        // };
-                        //dispatch(addItem(newData));
-                        navigate("/view");
+                        let newData: Expense = {
+                          category: category,
+                          amountSpent: amount,
+                          date: new Date().toISOString(),
+                        };
                         setOpen(false);
+                        appDispatch(addExpenseData(newData));
+                        setAmount(0);
+                        setCategory("");
+                        appDispatch(fetchExpensesList());
                       }}
                     >
                       ADD
@@ -174,14 +187,18 @@ export default function EditModal(props: Props) {
                   <Button
                     variant="outlined"
                     onClick={() => {
-                      let updatedData = {
+                      setOpen(false);
+                      let updatedData: Expense = {
                         ...rowData,
                         category: category,
                         amountSpent: amount,
+                        date: new Date().toISOString(),
                       };
-                      //dispatch(update(updatedData));
-                      navigate("/view");
-                      setOpen(false);
+                      appDispatch(updateExpense(updatedData));
+                      if (rowData?.id) {
+                        //appDispatch(fetchExpenseData(rowData.id));
+                        navigate("/view");
+                      }
                     }}
                   >
                     UPDATE

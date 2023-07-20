@@ -6,12 +6,11 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { memo, useEffect } from "react";
 import EditModal from "./EditModal";
 import { fetchExpensesList } from "../redux/features/expenses";
-import store from "../redux/app/store";
 import { useAppDispatch } from "../hooks/expense-dispatch";
 import moment from "moment";
 
@@ -35,15 +34,14 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-export default function Transaction() {
+const Transaction = memo(() => {
   const expenseData = useSelector((state: any) => state.expense.expenseList);
-  const [open, setOpen] = useState(false);
-
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     dispatch(fetchExpensesList());
-  }, []);
+    return () => {};
+  }, [dispatch]);
 
   return (
     <TableContainer component={Paper}>
@@ -76,8 +74,11 @@ export default function Transaction() {
               </StyledTableCell>
             </StyledTableRow>
           ))}
+          {!expenseData && <div>{"Loading..."}</div>}
         </TableBody>
       </Table>
     </TableContainer>
   );
-}
+});
+
+export default Transaction;

@@ -1,11 +1,8 @@
 import React, { Suspense } from "react";
 import "./App.css";
-import Main from "./components/Main";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Transaction from "./components/Transaction";
 import { Box, Typography } from "@mui/material";
-import EditModal from "./components/EditModal";
-import ExpenseItem from "./components/ExpenseItem";
+const LazyExpenseItem = React.lazy(() => import("./components/ExpenseItem"));
 const LazyMain = React.lazy(() => import("./components/Main"));
 const LazyTransaction = React.lazy(() => import("./components/Transaction"));
 
@@ -38,7 +35,14 @@ function App() {
               </Suspense>
             }
           />
-          <Route path="/view/:id" element={<ExpenseItem />} />
+          <Route
+            path="/view/:id"
+            element={
+              <Suspense fallback={`Loading...`}>
+                <LazyExpenseItem />
+              </Suspense>
+            }
+          />
         </Routes>
       </Router>
     </div>

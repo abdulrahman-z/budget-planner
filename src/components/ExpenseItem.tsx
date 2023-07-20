@@ -34,20 +34,23 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-export default function ExpenseItem() {
+const ExpenseItem = () => {
   let { id } = useParams();
-  const expenseItem = useSelector((state: any) => state.expense.expenseItem);
-
   //console.log(expenseItem);
   //   let tempId: number = Number(
   //     window.location.pathname[window.location.pathname.length - 1]
   //   );
 
   const dispatch = useAppDispatch();
-  React.useEffect(() => {
-    dispatch(fetchExpenseData(id || ""));
-  }, []);
 
+  React.useEffect(() => {
+    if (id) {
+      dispatch(fetchExpenseData(id));
+    }
+    return () => {};
+  }, [dispatch, id]);
+
+  const expenseItem = useSelector((state: any) => state.expense.expenseItem);
   //   let seltectedListItem = expenseData.filter((listItem: any) => {
   //     if (listItem.id === id) {
   //       return listItem;
@@ -66,6 +69,7 @@ export default function ExpenseItem() {
           </TableRow>
         </TableHead>
         <TableBody>
+          {!expenseItem && <div>{"Loading..."}</div>}
           <StyledTableRow key={expenseItem.id}>
             <StyledTableCell component="th" scope="row">
               {expenseItem.category}
@@ -97,4 +101,6 @@ export default function ExpenseItem() {
       </Table>
     </TableContainer>
   );
-}
+};
+
+export default React.memo(ExpenseItem);
