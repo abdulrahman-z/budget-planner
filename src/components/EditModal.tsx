@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 import AddIcon from "@mui/icons-material/Add";
 import {
   addExpenseData,
-  fetchExpenseData,
+  deleteExpenseData,
   fetchExpensesList,
   updateExpense,
 } from "../redux/features/expenses";
@@ -216,8 +216,11 @@ export default function EditModal(props: Props) {
                     color="error"
                     style={{ margin: "10% 40%" }}
                     onClick={() => {
-                      //dispatch(remove(rowData));
+                      if (rowData?.id) {
+                        appDispatch(deleteExpenseData(rowData?.id));
+                      }
                       navigate("/view");
+                      appDispatch(fetchExpensesList());
                       setOpen(false);
                     }}
                   >

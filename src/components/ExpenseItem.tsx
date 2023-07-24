@@ -9,10 +9,11 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import EditModal from "./EditModal";
 import { useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import moment from "moment";
 import { useAppDispatch } from "../hooks/expense-dispatch";
 import { fetchExpenseData } from "../redux/features/expenses";
+import { Button } from "@mui/material";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -41,6 +42,8 @@ const ExpenseItem = () => {
   //     window.location.pathname[window.location.pathname.length - 1]
   //   );
 
+  const navigate = useNavigate();
+
   const dispatch = useAppDispatch();
 
   React.useEffect(() => {
@@ -58,48 +61,57 @@ const ExpenseItem = () => {
   //   });
 
   return (
-    <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 700 }} aria-label="customized table">
-        <TableHead>
-          <TableRow>
-            <StyledTableCell>Catergory</StyledTableCell>
-            <StyledTableCell align="right">Amount</StyledTableCell>
-            <StyledTableCell align="right">Date</StyledTableCell>
-            <StyledTableCell align="right">Actions</StyledTableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {!expenseItem && <div>{"Loading..."}</div>}
-          <StyledTableRow key={expenseItem.id}>
-            <StyledTableCell component="th" scope="row">
-              {expenseItem.category}
-            </StyledTableCell>
-            <StyledTableCell align="right">
-              {expenseItem.amountSpent}
-            </StyledTableCell>
-            <StyledTableCell align="right">
-              {moment(expenseItem.date).format("YYYY-MMM-DD")}
-            </StyledTableCell>
-            <StyledTableCell align="right">
-              {
-                <div>
-                  <EditModal
-                    mode={"Edit"}
-                    rowData={expenseItem}
-                    //expenseList={expenseData}
-                  />
-                  <EditModal
-                    mode={"Delete"}
-                    rowData={expenseItem}
-                    //expenseList={expenseData}
-                  />
-                </div>
-              }
-            </StyledTableCell>
-          </StyledTableRow>
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <>
+      <Button
+        variant="contained"
+        style={{ margin: "24px 0" }}
+        onClick={() => navigate("/")}
+      >
+        Home
+      </Button>
+      <TableContainer component={Paper}>
+        <Table sx={{ minWidth: 700 }} aria-label="customized table">
+          <TableHead>
+            <TableRow>
+              <StyledTableCell>Catergory</StyledTableCell>
+              <StyledTableCell align="right">Amount</StyledTableCell>
+              <StyledTableCell align="right">Date</StyledTableCell>
+              <StyledTableCell align="right">Actions</StyledTableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {!expenseItem && <div>{"Loading..."}</div>}
+            <StyledTableRow key={expenseItem.id}>
+              <StyledTableCell component="th" scope="row">
+                {expenseItem.category}
+              </StyledTableCell>
+              <StyledTableCell align="right">
+                {expenseItem.amountSpent}
+              </StyledTableCell>
+              <StyledTableCell align="right">
+                {moment(expenseItem.date).format("YYYY-MMM-DD")}
+              </StyledTableCell>
+              <StyledTableCell align="right">
+                {
+                  <div>
+                    <EditModal
+                      mode={"Edit"}
+                      rowData={expenseItem}
+                      //expenseList={expenseData}
+                    />
+                    <EditModal
+                      mode={"Delete"}
+                      rowData={expenseItem}
+                      //expenseList={expenseData}
+                    />
+                  </div>
+                }
+              </StyledTableCell>
+            </StyledTableRow>
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </>
   );
 };
 

@@ -2,23 +2,41 @@ import { Box, Button, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import Balance from "./Balance";
 import { useDispatch, useSelector } from "react-redux";
-import { setBudget } from "../redux/features/budget";
-import { ExpenseService } from "../api/service";
+import { getBudget, logOut, setBudget } from "../redux/features/budget";
+import { useAppDispatch } from "../hooks/expense-dispatch";
+import { RootState } from "../redux/app/store";
 
 const container = {
   background: "#444",
-  height: "600px",
+  height: "360px",
   width: "550px",
 };
 
 function PlannerForm() {
   const [isEdit, setIsEdit] = useState<boolean>(false);
-  const Budget = useSelector((state: any) => state.budget.budget);
+  const Budget = useSelector((state: RootState) => state.budget.budget);
   const [plannedBudget, setPlannedBudget] = useState<number>(Budget);
+  const userId = useSelector((state: RootState) => state.budget.id);
+
   const dispatch = useDispatch();
+  const appDispatch = useAppDispatch();
+
+  useEffect(() => {
+    appDispatch(getBudget(userId));
+
+    return () => {};
+  }, [appDispatch, userId]);
 
   return (
     <div>
+      <Button
+        variant="contained"
+        color="error"
+        style={{ padding: "8px", margin: "8px 0" }}
+        onClick={() => dispatch(logOut())}
+      >
+        Logout
+      </Button>
       <Box style={container}>
         <form
           style={{
@@ -43,7 +61,7 @@ function PlannerForm() {
                 variant="h4"
                 style={{ color: "#fff", textAlign: "center" }}
               >
-                {plannedBudget}
+                {Budget}
               </Typography>
             )}
           </div>
@@ -62,7 +80,12 @@ function PlannerForm() {
               color="primary"
               variant="contained"
               onClick={() => {
-                dispatch(setBudget(plannedBudget));
+                let updateBudget = {
+                  budget: plannedBudget,
+                  id: "1",
+                  name: "Brad Kirlin",
+                };
+                appDispatch(setBudget(updateBudget));
                 setIsEdit(false);
               }}
             >

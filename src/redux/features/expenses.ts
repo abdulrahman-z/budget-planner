@@ -48,6 +48,12 @@ export const updateExpense = createAsyncThunk("Expense/update",async(data: Expen
     } 
 })
 
+export const deleteExpenseData = createAsyncThunk("Expense/deleteExpense",async(id: string) => {
+    return  await ExpenseService.deleteExpense(id).then((response) => {
+        return response;
+    })
+})
+
 
 const ExpenseSlice = createSlice({
     name: "Expense",
@@ -152,6 +158,20 @@ const ExpenseSlice = createSlice({
         //     state.newListItem = {};
         // })
 
+
+        //5.delete
+         
+        builder.addCase(deleteExpenseData.pending, (state, action) => {
+            //console.log(action)
+            state.expenseList = [];
+        })
+
+        builder.addCase(deleteExpenseData.fulfilled, (state, action) => {
+            //console.log(action)
+            state.expenseList = state.expenseList.filter((listItem: any) => {
+                return listItem.id !== action.payload;
+            });
+        })
     }
 })
 

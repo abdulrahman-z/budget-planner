@@ -2,6 +2,7 @@ import React, { Suspense } from "react";
 import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Box, Typography } from "@mui/material";
+import NotFound from "./components/NotFound";
 const LazyExpenseItem = React.lazy(() => import("./components/ExpenseItem"));
 const LazyMain = React.lazy(() => import("./components/Main"));
 const LazyTransaction = React.lazy(() => import("./components/Transaction"));
@@ -43,6 +44,7 @@ function App() {
               </Suspense>
             }
           />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>
     </div>
